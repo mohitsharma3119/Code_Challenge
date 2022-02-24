@@ -6,6 +6,9 @@ DealerTrack/DealerTrack/ClientApp/node_modules
 # testing
 /coverage
 
+DealerTrack/.vs/
+
+
 DealerTrack/DealerTrack.sln
 
 test/bin
