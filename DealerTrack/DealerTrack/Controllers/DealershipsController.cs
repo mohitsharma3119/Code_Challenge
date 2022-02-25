@@ -18,13 +18,11 @@ namespace DealerTrack.Controllers
     {
         private readonly IFileService _csvService;
         private readonly IDealershipRepository _dealershipRepository;
-        private readonly ILogger<DealershipsController> _logger;
 
-        public DealershipsController(IFileService csvService, IDealershipRepository dealershipRepository, ILogger<DealershipsController> logger)
+        public DealershipsController(IFileService csvService, IDealershipRepository dealershipRepository)
         {
             _csvService = csvService;
             _dealershipRepository = dealershipRepository;
-            _logger = logger;
         }
 
         [HttpGet]
