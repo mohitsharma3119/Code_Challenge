@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DealerTrack.Models
+namespace DealerTrack.Model.Models
 {
     [NotMapped]
     public class Error

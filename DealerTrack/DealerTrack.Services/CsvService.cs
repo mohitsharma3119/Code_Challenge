@@ -1,8 +1,5 @@
-﻿using DealerTrack.Interfaces;
-using DealerTrack.Helpers;
-using DealerTrack.Models;
+﻿using DealerTrack.Helpers;
 using CsvHelper;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +8,9 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using DealerTrack.Repositories.Interfaces;
+using DealerTrack.Services.Interfaces;
+using DealerTrack.Model.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace DealerTrack.Services
 {
@@ -25,19 +25,6 @@ namespace DealerTrack.Services
         {
             try
             {
-                //var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), "TempFiles");
-                //var filePath = "";
-
-                //if (file.Length > 0)
-                //{
-                //    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                //    filePath = Path.Combine(pathToSave, fileName);
-                //    using (var stream = new FileStream(filePath, FileMode.Create))
-                //    {
-                //         file.CopyTo(stream);
-                //    }                   
-                //}
-
                 using (var reader = new StreamReader(file.OpenReadStream(), Encoding.UTF7))
                 using (var csv = new CsvReader(reader, System.Globalization.CultureInfo.CurrentCulture))
                 {
@@ -47,9 +34,9 @@ namespace DealerTrack.Services
                     return records;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw new Exception(e.Message);
+                throw;
             }
         }
 
@@ -61,9 +48,9 @@ namespace DealerTrack.Services
                 dealerships = await Task.Run(() => ReadFileAsync(file));
                 return await _dealershipRepository.BulkInsertDealershipAsync(dealerships);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw new Exception(e.Message);
+                throw;
             }
         }
 

@@ -1,10 +1,14 @@
 ﻿using System;
+using System.IO;
+using DealerTrack.Model.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
 #nullable disable
 
-namespace DealerTrack.Models
+namespace DealerTrack.Model
 {
     public partial class DealershipContext : DbContext
     {
@@ -14,13 +18,28 @@ namespace DealerTrack.Models
         {
         }
 
+        public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DealershipContext>
+        {
+            public DealershipContext CreateDbContext(string[] args)
+            {
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile(@Directory.GetCurrentDirectory() + "/../DealerTrack/appsettings.json")
+                    .Build();
+                var builder = new DbContextOptionsBuilder<DealershipContext>();
+                var connectionString = configuration.GetConnectionString("DatabaseConnection");
+                builder.UseSqlServer(connectionString);
+                return new DealershipContext(builder.Options);
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");           
+            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
             modelBuilder.Entity<Dealerships>(entity =>
             {
-                entity.Property(e => e.DealNumber)                    
+                entity.Property(e => e.DealNumber)
                     .HasColumnName("dealnumber");
 
                 entity.Property(e => e.CustomerName)

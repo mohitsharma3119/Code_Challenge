@@ -1,11 +1,10 @@
-using DealerTrack.Interfaces;
-using DealerTrack.Models;
+using DealerTrack.Model;
 using DealerTrack.Repositories;
 using DealerTrack.Repositories.Interfaces;
 using DealerTrack.Services;
+using DealerTrack.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,11 +26,12 @@ namespace DealerTrack
         {
 
             services.AddControllers();
+            services.AddMemoryCache();
 
             services.AddScoped<IFileService, CsvService>();
             services.AddScoped<IDealershipRepository, DealershipRepository>();
             services.AddDbContext<DealershipContext>(options => options.
-                                UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
+                                UseSqlServer(Configuration["ConnectionStrings:DatabaseConnection"]));
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {

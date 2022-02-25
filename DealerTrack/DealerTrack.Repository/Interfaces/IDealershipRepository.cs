@@ -1,4 +1,4 @@
-﻿using DealerTrack.Models;
+﻿using DealerTrack.Model.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

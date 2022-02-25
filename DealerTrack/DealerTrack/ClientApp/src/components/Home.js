@@ -56,7 +56,7 @@ export default class Home extends Component {
         return (
             <div>
                 <form onSubmit={this.onFormSubmit}>
-                    <Typography component="h3" variant="h3" align="center" color="textPrimary" gutterBottom>
+                    <Typography component="h4" variant="h4" align="center" color="textPrimary" gutterBottom>
                         Upload CSV
                     </Typography>
                     <DropzoneArea

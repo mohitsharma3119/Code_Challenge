@@ -17,7 +17,6 @@ const useStyles = makeStyles({
     },
 });
 
-
 export default function Dealership() {
     const classes = useStyles();
 

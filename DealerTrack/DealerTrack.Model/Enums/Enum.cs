@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DealerTrack.Models
+namespace DealerTrack.Model.Enums
 {
     [NotMapped]
     public static class NReasonCode

@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using DealerTrack.Models;
-using DealerTrack.Interfaces;
-using System.Linq;
-using DealerTrack.Helpers;
 using DealerTrack.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using DealerTrack.Model.Models;
+using DealerTrack.Model.Enums;
+using DealerTrack.Services.Interfaces;
 
 namespace DealerTrack.Controllers
 {
@@ -17,11 +18,13 @@ namespace DealerTrack.Controllers
     {
         private readonly IFileService _csvService;
         private readonly IDealershipRepository _dealershipRepository;
+        private readonly ILogger<DealershipsController> _logger;
 
-        public DealershipsController(IFileService csvService, IDealershipRepository dealershipRepository)
+        public DealershipsController(IFileService csvService, IDealershipRepository dealershipRepository, ILogger<DealershipsController> logger)
         {
             _csvService = csvService;
             _dealershipRepository = dealershipRepository;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -38,13 +41,22 @@ namespace DealerTrack.Controllers
         {
             try
             {
-                List<Dealerships> dealershipList = new List<Dealerships>();
-                dealershipList = await _dealershipRepository.GetAllAsync();
-                return StatusCode(200, dealershipList);
+                Log.Information($"GET GetDealerships called at {DateTime.Now}");
+
+                return Ok(await _dealershipRepository.GetAllAsync());
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                Log.Error(ex, $"Error while fetching records GetAll controller at {DateTime.Now}");
+                var listError = new List<Error>()
+                {
+                    new Error()
+                    {
+                        ErrorMessage = NReasonForCode.Hashtbl[NReasonCode.ExceptionError].ToString(),
+                        ErrorCode = NReasonCode.ExceptionError
+                    }
+                };
+                return StatusCode(500, listError);
             }
             
         }
@@ -55,13 +67,22 @@ namespace DealerTrack.Controllers
         {
             try
             {
-                MostSoldVehicle mostSold = new MostSoldVehicle();
-                mostSold = _dealershipRepository.GetByMostSoldVehicleAsync();
-                return StatusCode(200, mostSold);
+                Log.Information($"GET GetMostSoldVehicle called at {DateTime.Now}");
+
+                return Ok(_dealershipRepository.GetByMostSoldVehicleAsync());
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex);
+                Log.Error(ex, $"Error while fetching data GetMostSoldVehicle controller at {DateTime.Now}");
+                var listError = new List<Error>()
+                {
+                    new Error()
+                    {
+                        ErrorMessage = NReasonForCode.Hashtbl[NReasonCode.ExceptionError].ToString(),
+                        ErrorCode = NReasonCode.ExceptionError
+                    }
+                };
+                return StatusCode(500, listError);
             }
 
         }
@@ -72,12 +93,22 @@ namespace DealerTrack.Controllers
         {
             try
             {
-                await _dealershipRepository.CreateDealershipAsync(dealerships);
-                return StatusCode(201, "Created");
+                Log.Information($"POST Create controller called at {DateTime.Now}");
+                
+                return Ok(await _dealershipRepository.CreateDealershipAsync(dealerships));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                Log.Error(ex, $"Error while creating dealership at {DateTime.Now}");
+                var listError = new List<Error>()
+                {
+                    new Error()
+                    {
+                        ErrorMessage = NReasonForCode.Hashtbl[NReasonCode.ExceptionError].ToString(),
+                        ErrorCode = NReasonCode.ExceptionError
+                    }
+                };
+                return StatusCode(500, listError);
             }
            
         }
@@ -86,7 +117,16 @@ namespace DealerTrack.Controllers
         [Route("UploadCsv")]
         public async Task<IActionResult> UploadCsv()
         {
-            var listError = new List<Error>()
+            Log.Information($"POST UploadCsv controller called at {DateTime.Now}");            
+            try
+            {
+                var file = Request.Form.Files[0];
+                return Ok(await _csvService.ProcessFileAsync(file));  
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error while adding dealerships in UploadCSV controller at {DateTime.Now}");
+                var listError = new List<Error>()
                 {
                     new Error()
                     {
@@ -94,21 +134,11 @@ namespace DealerTrack.Controllers
                         ErrorCode = NReasonCode.ExceptionError
                     }
                 };
-            try
-            {
-                var file = Request.Form.Files[0];
-                if(await _csvService.ProcessFileAsync(file))
-                    return Ok("Records Added");
-                else
-                    return StatusCode(500, listError);
-            }
-            catch (Exception ex)
-            {                
                 return StatusCode(500, listError);
             }
         }
 
-        //// GET: Dealerships/Delete/5
+        //// GET: Dealerships/Delete/5 Placeholder for delete
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -122,7 +152,16 @@ namespace DealerTrack.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                Log.Error(ex, $"Error while adding dealerships in UploadCSV controller at {DateTime.Now}");
+                var listError = new List<Error>()
+                {
+                    new Error()
+                    {
+                        ErrorMessage = NReasonForCode.Hashtbl[NReasonCode.ExceptionError].ToString(),
+                        ErrorCode = NReasonCode.ExceptionError
+                    }
+                };
+                return StatusCode(500, listError);
             }
         }
     }

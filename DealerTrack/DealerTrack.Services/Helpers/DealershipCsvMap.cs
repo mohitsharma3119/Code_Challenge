@@ -1,7 +1,7 @@
-﻿using DealerTrack.Models;
-using CsvHelper;
+﻿using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
+using DealerTrack.Model.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;

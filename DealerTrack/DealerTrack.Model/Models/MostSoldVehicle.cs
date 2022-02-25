@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DealerTrack.Models
+namespace DealerTrack.Model.Models
 {
     [NotMapped]
     public class MostSoldVehicle
