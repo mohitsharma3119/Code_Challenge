@@ -82,7 +82,7 @@ namespace DealerTrack.Repositories
         {
             List<Dealerships> dealerships = new List<Dealerships>();
             dealerships = await _context.Dealerships.ToListAsync();
-            _cache.Set(_configuration["CacheKey:DealershipsData"], dealerships, TimeSpan.FromMinutes(5));
+            _cache.Set(_configuration["CacheKey:DealershipsData"], dealerships, TimeSpan.FromSeconds(5));
             return dealerships;
         }
 

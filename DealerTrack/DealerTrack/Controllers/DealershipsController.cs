@@ -57,8 +57,7 @@ namespace DealerTrack.Controllers
                     }
                 };
                 return StatusCode(500, listError);
-            }
-            
+            }            
         }
 
         [HttpGet]
